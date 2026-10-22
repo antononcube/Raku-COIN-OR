@@ -81,16 +81,11 @@ zef install https://github.com/antononcube/Raku-COIN-OR
 
 ---
 
-## Quick start
+## Examples
 
-After installing CBC, run the example from the distribution root:
+Here are Raku scripts with worked examples:
 
-```sh
-raku -Ilib examples/small-model.raku
-```
-
-Run the integration test with:
-
-```sh
-raku -Ilib xt/01-small-model.rakutest
-```
+- [(Very) simple model](./examples/small-model.raku)
+- [Solving a Linear Programming (LP) problem](examples/solving-an-LP-problem.raku)
+- [Solving Stingler's diet](./examples/solving-stingler-diet.raku)
+- [Assignment problem](./examples/assigment-problem.raku)
