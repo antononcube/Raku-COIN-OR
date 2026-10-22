@@ -3,9 +3,10 @@ use Test;
 use lib 'lib';
 use COIN-OR;
 
-plan 9;
+plan 10;
 
 ok cbc-version.chars > 0, 'CBC C interface is available';
+ok cbc-library.chars > 0, 'CBC library location is configured';
 
 my $model = Model.new(:name<small-model-test>);
 $model.add-column('x', :upper(2), :objective(3), :integer);

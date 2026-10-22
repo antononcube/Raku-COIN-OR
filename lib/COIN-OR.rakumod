@@ -30,28 +30,38 @@ using it.
 
 use NativeCall;
 
-constant $library = 'CbcSolver';
+# NativeCall resolves the ordinary library name on Linux distributions. On
+# macOS, where Homebrew's prefix is architecture-dependent, callers can
+# provide either the full dylib path or its containing directory.
+constant $shared-library-file =
+    $*KERNEL.name.lc eq 'darwin' ?? 'libCbcSolver.dylib' !! 'libCbcSolver.so';
+sub cbc-library(--> Str) is export {
+    %*ENV<COIN_OR_CBC_LIBRARY>
+    // (%*ENV<COIN_OR_LIBRARY_DIR>:exists
+        ?? "%*ENV<COIN_OR_LIBRARY_DIR>/$shared-library-file"
+        !! $shared-library-file)
+}
 
 class CbcModel is repr('CPointer') { }
 
-sub Cbc_getVersion(--> Str) is native($library) { * }
-sub Cbc_newModel(--> CbcModel) is native($library) { * }
-sub Cbc_deleteModel(CbcModel) is native($library) { * }
-sub Cbc_setProblemName(CbcModel, Str --> int32) is native($library) { * }
+sub Cbc_getVersion(--> Str) is native(&cbc-library) { * }
+sub Cbc_newModel(--> CbcModel) is native(&cbc-library) { * }
+sub Cbc_deleteModel(CbcModel) is native(&cbc-library) { * }
+sub Cbc_setProblemName(CbcModel, Str --> int32) is native(&cbc-library) { * }
 sub Cbc_addCol(CbcModel, Str, num64, num64, num64, int8, int32, Pointer, Pointer)
-    is native($library) { * }
+    is native(&cbc-library) { * }
 sub Cbc_addRow(CbcModel, Str, int32, CArray[int32], CArray[num64], int8, num64)
-    is native($library) { * }
-sub Cbc_setObjSense(CbcModel, num64) is native($library) { * }
-sub Cbc_solve(CbcModel --> int32) is native($library) { * }
-sub Cbc_isProvenOptimal(CbcModel --> int32) is native($library) { * }
-sub Cbc_isProvenInfeasible(CbcModel --> int32) is native($library) { * }
-sub Cbc_status(CbcModel --> int32) is native($library) { * }
-sub Cbc_getObjValue(CbcModel --> num64) is native($library) { * }
-sub Cbc_getNumCols(CbcModel --> int32) is native($library) { * }
-sub Cbc_getNumRows(CbcModel --> int32) is native($library) { * }
-sub Cbc_getColSolution(CbcModel --> Pointer) is native($library) { * }
-sub Cbc_setLogLevel(CbcModel, int32) is native($library) { * }
+    is native(&cbc-library) { * }
+sub Cbc_setObjSense(CbcModel, num64) is native(&cbc-library) { * }
+sub Cbc_solve(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_isProvenOptimal(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_isProvenInfeasible(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_status(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_getObjValue(CbcModel --> num64) is native(&cbc-library) { * }
+sub Cbc_getNumCols(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_getNumRows(CbcModel --> int32) is native(&cbc-library) { * }
+sub Cbc_getColSolution(CbcModel --> Pointer) is native(&cbc-library) { * }
+sub Cbc_setLogLevel(CbcModel, int32) is native(&cbc-library) { * }
 
 sub cbc-version(--> Str) is export { Cbc_getVersion }
 
