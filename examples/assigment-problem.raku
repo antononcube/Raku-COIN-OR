@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 use v6.d;
-use lib 'lib';
+# use lib 'lib';
 use COIN-OR;
 
 # Google OR-Tools assignment example, modeled as a CBC binary MIP.

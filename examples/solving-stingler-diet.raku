@@ -1,6 +1,6 @@
 #!/usr/bin/env raku
 use v6.d;
-use lib 'lib';
+# use lib 'lib';
 use COIN-OR;
 
 # Stigler diet LP, using the foods that define the optimum in the
