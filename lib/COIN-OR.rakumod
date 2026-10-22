@@ -69,12 +69,16 @@ class Model is export {
     has CbcModel $!model;
     has Bool $!closed = False;
 
-    submethod BUILD(:$name = '') {
+    #| Create a new empty CBC optimization model.
+    submethod BUILD(
+        :$name = '', #= Optional descriptive name assigned to the CBC problem.
+    ) {
         $!model = Cbc_newModel();
         die 'CBC could not create a model' unless $!model.defined;
         Cbc_setProblemName($!model, $name) if $name.chars;
     }
 
+    #| Release the native CBC model. Calling this more than once is safe.
     method close(--> Nil) {
         return if $!closed;
         Cbc_deleteModel($!model) if $!model.defined;
@@ -82,31 +86,35 @@ class Model is export {
         Nil
     }
 
+    #| Release the native model automatically when this Raku object is collected.
     submethod DESTROY { self.close }
 
+    #| Return the native model, or fail if the model has been closed.
     method !open(--> CbcModel) {
         die 'This COIN-OR model is closed' if $!closed;
         $!model
     }
 
+    #| Add a decision variable to the model.
     method add-column(
-        Str:D $name,
-        Real:D :$lower = 0,
-        Real:D :$upper = Inf,
-        Real:D :$objective = 0,
-        Bool :$integer = False,
+        Str:D $name,            #= Unique name of the decision variable.
+        Real:D :$lower = 0,     #= Inclusive lower bound for the variable; defaults to zero.
+        Real:D :$upper = Inf,   #= Inclusive upper bound for the variable; defaults to positive infinity.
+        Real:D :$objective = 0, #= Coefficient of the variable in the objective function.
+        Bool :$integer = False, #= When true, restrict the variable to integral values.
     --> Nil) {
         Cbc_addCol(self!open, $name, $lower.Num, $upper.Num, $objective.Num,
                    $integer ?? 1 !! 0, 0, Pointer, Pointer);
         Nil
     }
 
+    #| Add a named linear constraint involving existing decision variables.
     method add-row(
-        Str:D $name,
-        Positional:D $columns,
-        Positional:D $coefficients,
-        Str:D $sense,
-        Real:D $rhs,
+        Str:D $name,                #= Unique name of the linear constraint.
+        Positional:D $columns,      #= Zero-based indexes of the variables participating in the constraint.
+        Positional:D $coefficients, #= Coefficients corresponding position-for-position to C<$columns>.
+        Str:D $sense,               #= Constraint relation: C<< <= >>, C<< >= >>, C<=>, C<L>, C<G>, or C<E>.
+        Real:D $rhs,                #= Right-hand-side value of the constraint.
     --> Nil) {
 
         die 'A row needs equally many column indexes and coefficients'
@@ -127,18 +135,39 @@ class Model is export {
         Nil
     }
 
+    #| Set the objective direction to minimization.
     method minimize(--> Nil) { Cbc_setObjSense(self!open, 1e0); Nil }
-    method maximize(--> Nil) { Cbc_setObjSense(self!open, -1e0); Nil }
-    method log-level(Int:D $level --> Nil) { Cbc_setLogLevel(self!open, $level); Nil }
 
+    #| Set the objective direction to maximization.
+    method maximize(--> Nil) { Cbc_setObjSense(self!open, -1e0); Nil }
+
+    #| Set CBC's solver-output verbosity.
+    method log-level(
+        Int:D $level, #= CBC verbosity level; zero suppresses solver log output.
+    --> Nil) { Cbc_setLogLevel(self!open, $level); Nil }
+
+    #| Solve the model and return whether CBC proved the solution optimal.
     method solve(--> Bool:D) { Cbc_solve(self!open); so Cbc_isProvenOptimal($!model) }
+
+    #| Return whether CBC has proved an optimal solution.
     method optimal(--> Bool:D) { so Cbc_isProvenOptimal(self!open) }
+
+    #| Return whether CBC has proved the model infeasible.
     method infeasible(--> Bool:D) { so Cbc_isProvenInfeasible(self!open) }
+
+    #| Return CBC's numeric solve-status code.
     method status(--> Int:D) { Cbc_status(self!open) }
+
+    #| Return the objective value of the best solution found.
     method objective-value(--> Num:D) { Cbc_getObjValue(self!open) }
+
+    #| Return the current number of decision variables.
     method columns(--> Int:D) { Cbc_getNumCols(self!open) }
+
+    #| Return the current number of linear constraints.
     method rows(--> Int:D) { Cbc_getNumRows(self!open) }
 
+    #| Return solution values in decision-variable insertion order.
     method solution(--> Array:D) {
         my $count = self.columns;
         return [] unless $count;

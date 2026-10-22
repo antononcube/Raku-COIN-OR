@@ -47,3 +47,19 @@ https://developers.google.com/optimization/assignment/assignment_example
 
 Put the code in the file "./examples/assigment-problem.raku".
 ```
+
+---
+
+## Docs
+
+```text
+For each method of the class COIN-OR::Model add usage message (or WHY) for each argument. E.g. Str:D $name, #= variable name.
+```
+
+````text
+Above each method of the class COIN-OR::Model add usage message with the `#|` notation. For example:
+```raku
+#| Add constraint
+method add(...
+```
+````
