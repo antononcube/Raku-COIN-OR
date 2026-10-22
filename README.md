@@ -1,6 +1,6 @@
 # Raku-COIN-OR
 
-Raku interface to the COIN-OR numerical optimization solver.
+Raku interface to the [COIN-OR](https://coin-or.github.io) numerical optimization solver.
 
 The initial API wraps CBC's portable C interface through Raku `NativeCall`.
 It supports constructing and solving linear mixed-integer models; see
@@ -64,6 +64,22 @@ sudo apt install coinor-clp coinor-libclp-dev
 # Install Ipopt (Nonlinear Programming Solver)
 sudo apt install coinor-ipopt coinor-libipopt-dev
 ```
+
+### Raku package
+
+From Zef ecosystem:
+
+```
+zef install COIN-OR
+```
+
+From GitHub:
+
+```
+zef install https://github.com/antononcube/Raku-COIN-OR
+```
+
+---
 
 ## Quick start
 
