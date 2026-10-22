@@ -108,12 +108,13 @@ class Model is export {
         Str:D $sense,
         Real:D $rhs,
     --> Nil) {
+
         die 'A row needs equally many column indexes and coefficients'
-            unless $columns.elems == $coefficients.elems;
-        my %sense = '<=' => 'L', '>=' => 'G', '=' => 'E', 'L' => 'L',
-                    'G' => 'G', 'E' => 'E';
+        unless $columns.elems == $coefficients.elems;
+
+        my %sense = '<=' => 'L', '>=' => 'G', '=' => 'E', 'L' => 'L', 'G' => 'G', 'E' => 'E';
         die "Unknown row sense '$sense'; use <=, >=, or ="
-            unless %sense{$sense}:exists;
+        unless %sense{$sense}:exists;
 
         my $indices = CArray[int32].new;
         my $values = CArray[num64].new;
@@ -121,16 +122,14 @@ class Model is export {
             $indices[$i] = $columns[$i].Int;
             $values[$i] = $coefficients[$i].Num;
         }
-        Cbc_addRow(self!open, $name, $columns.elems, $indices, $values,
-                   %sense{$sense}.ord, $rhs.Num);
+
+        Cbc_addRow(self!open, $name, $columns.elems, $indices, $values, %sense{$sense}.ord, $rhs.Num);
         Nil
     }
 
     method minimize(--> Nil) { Cbc_setObjSense(self!open, 1e0); Nil }
     method maximize(--> Nil) { Cbc_setObjSense(self!open, -1e0); Nil }
-    method log-level(Int:D $level --> Nil) {
-        Cbc_setLogLevel(self!open, $level); Nil
-    }
+    method log-level(Int:D $level --> Nil) { Cbc_setLogLevel(self!open, $level); Nil }
 
     method solve(--> Bool:D) { Cbc_solve(self!open); so Cbc_isProvenOptimal($!model) }
     method optimal(--> Bool:D) { so Cbc_isProvenOptimal(self!open) }
