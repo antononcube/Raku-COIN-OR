@@ -1,0 +1,24 @@
+use v6.d;
+use Test;
+use lib 'lib';
+use COIN-OR;
+
+plan 9;
+
+ok cbc-version.chars > 0, 'CBC C interface is available';
+
+my $model = Model.new(:name<small-model-test>);
+$model.add-column('x', :upper(2), :objective(3), :integer);
+$model.add-column('y', :upper(3), :objective(2), :integer);
+$model.add-row('capacity', [0, 1], [1e0, 1e0], '<=', 4);
+$model.maximize;
+$model.log-level(0);
+
+is $model.columns, 2, 'two columns were added';
+is $model.rows, 1, 'one constraint was added';
+ok $model.solve, 'small integer model solves to optimality';
+ok $model.optimal, 'CBC reports a proven optimum';
+ok !$model.infeasible, 'model is feasible';
+is $model.status, 0, 'CBC finished normally';
+is-approx $model.objective-value, 10e0, 'objective value is correct';
+is-deeply $model.solution, [2e0, 2e0], 'optimal variable values are correct';

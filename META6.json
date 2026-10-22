@@ -1,0 +1,21 @@
+{
+    "name": "COIN-OR",
+    "description": "Interface to the COIN-OR numerical optimization solver.",
+    "version": "0.0.1",
+    "authors": [
+        "Anton Antonov"
+    ],
+    "auth": "zef:antononcube",
+    "build-depends": [],
+    "provides": {
+        "COIN-OR": "lib/COIN-OR.rakumod"
+    },
+    "license": "Artistic-2.0",
+    "tags": [
+        "coin",
+        "coin-or",
+        "optimization"
+    ],
+    "api": "0",
+    "source-url": "https://github.com/antononcube/Raku-COIN-OR.git"
+}
