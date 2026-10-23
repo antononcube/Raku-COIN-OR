@@ -1,0 +1,9 @@
+Changes of the Raku package "COIN-OR".
+
+0.0.2 2026-10-22
+    - Method of option specification of Linear Programming algorithms
+    - Installation scripts: one for Linux and macOS, another one for Windows
+    - Added GitHub workflows
+
+0.0.1 2026-10-21
+    - First version

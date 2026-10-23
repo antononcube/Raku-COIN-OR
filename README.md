@@ -10,8 +10,7 @@
 Raku interface to the [COIN-OR](https://coin-or.github.io) numerical optimization solver.
 
 The initial API wraps CBC's portable C interface through Raku `NativeCall`.
-It supports constructing and solving linear mixed-integer models; see
-F<examples/small-model.raku>.
+It supports constructing and solving linear mixed-integer models; see examples listed below.
 
 ---
 
