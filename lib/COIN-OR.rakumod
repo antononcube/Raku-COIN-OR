@@ -62,6 +62,7 @@ sub Cbc_getNumCols(CbcModel --> int32) is native(&cbc-library) { * }
 sub Cbc_getNumRows(CbcModel --> int32) is native(&cbc-library) { * }
 sub Cbc_getColSolution(CbcModel --> Pointer) is native(&cbc-library) { * }
 sub Cbc_setLogLevel(CbcModel, int32) is native(&cbc-library) { * }
+sub Cbc_setParameter(CbcModel, Str, Str) is native(&cbc-library) { * }
 
 sub cbc-version(--> Str) is export { Cbc_getVersion }
 
@@ -145,6 +146,21 @@ class Model is export {
     method log-level(
         Int:D $level, #= CBC verbosity level; zero suppresses solver log output.
     --> Nil) { Cbc_setLogLevel(self!open, $level); Nil }
+
+    #| Select the LP algorithm used when solving the model.
+    method lp-method(
+    #= LP algorithm: C<simplex>, C<dual-simplex>, or C<interior-point>.
+            Str:D $method
+            --> Nil) {
+        my %cbc-action =
+                'simplex' => 'primalSimplex',
+                'dual-simplex' => 'dualSimplex',
+                'interior-point' => 'barrier';
+        die "Unknown LP method '$method'; use simplex, dual-simplex, or interior-point"
+        unless %cbc-action{$method}:exists;
+        Cbc_setParameter(self!open, %cbc-action{$method}, '');
+        Nil
+    }
 
     #| Solve the model and return whether CBC proved the solution optimal.
     method solve(--> Bool:D) { Cbc_solve(self!open); so Cbc_isProvenOptimal($!model) }
