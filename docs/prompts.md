@@ -50,7 +50,17 @@ Put the code in the file "./examples/assigment-problem.raku".
 
 ---
 
-## Docs
+## Simplex- and Interior-point methods
+
+```text
+I want to be able to specify which linear programming method use -- Simplex or Interior Point.
+Change the package code accordingly.
+Change an example script "./examples/solving-stingler-diet.raku" to shows the use of method.
+```
+
+---
+
+## Docs (in the code)
 
 ```text
 For each method of the class COIN-OR::Model add usage message (or WHY) for each argument. E.g. Str:D $name, #= variable name.
