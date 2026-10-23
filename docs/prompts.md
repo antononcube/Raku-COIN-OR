@@ -73,3 +73,11 @@ Above each method of the class COIN-OR::Model add usage message with the `#|` no
 method add(...
 ```
 ````
+
+---
+
+## Installation script
+
+```text
+Make an installation script in "./resources" that installs the COIN-OR libraries and the Raku package for both Linux or macOS. Make a separate script for Windows.
+```

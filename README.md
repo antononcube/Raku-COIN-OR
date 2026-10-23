@@ -79,6 +79,22 @@ From GitHub:
 zef install https://github.com/antononcube/Raku-COIN-OR
 ```
 
+### Installation scripts
+
+With Raku and `zef` already installed, the local distribution can be installed
+with its CBC dependencies using:
+
+```sh
+sh resources/install.sh
+```
+
+The script supports macOS (Homebrew) and Linux (APT or Pacman). On Windows,
+install MSYS2 and Raku with `zef`, then run from PowerShell:
+
+```powershell
+.\resources\install-windows.ps1
+```
+
 ---
 
 ## Examples
