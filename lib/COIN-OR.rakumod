@@ -48,10 +48,8 @@ sub Cbc_getVersion(--> Str) is native(&cbc-library) { * }
 sub Cbc_newModel(--> CbcModel) is native(&cbc-library) { * }
 sub Cbc_deleteModel(CbcModel) is native(&cbc-library) { * }
 sub Cbc_setProblemName(CbcModel, Str --> int32) is native(&cbc-library) { * }
-sub Cbc_addCol(CbcModel, Str, num64, num64, num64, int8, int32, Pointer, Pointer)
-    is native(&cbc-library) { * }
-sub Cbc_addRow(CbcModel, Str, int32, CArray[int32], CArray[num64], int8, num64)
-    is native(&cbc-library) { * }
+sub Cbc_addCol(CbcModel, Str, num64, num64, num64, int8, int32, Pointer, Pointer) is native(&cbc-library) { * }
+sub Cbc_addRow(CbcModel, Str, int32, CArray[int32], CArray[num64], int8, num64) is native(&cbc-library) { * }
 sub Cbc_setObjSense(CbcModel, num64) is native(&cbc-library) { * }
 sub Cbc_solve(CbcModel --> int32) is native(&cbc-library) { * }
 sub Cbc_isProvenOptimal(CbcModel --> int32) is native(&cbc-library) { * }
