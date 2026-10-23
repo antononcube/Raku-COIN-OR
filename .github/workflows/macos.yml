@@ -1,0 +1,21 @@
+name: Test on macOS
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Raku/setup-raku@v1
+      - name: Install CBC
+        run: brew install cbc
+      - name: Compile and test
+        run: |
+          export COIN_OR_CBC_LIBRARY="$(brew --prefix cbc)/lib/libCbcSolver.dylib"
+          raku -Ilib -c lib/COIN-OR.rakumod
+          raku -Ilib xt/01-small-model.rakutest
+          raku -Ilib examples/small-model.raku

@@ -1,0 +1,22 @@
+name: Test on Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Raku/setup-raku@v1
+      - name: Install CBC
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y coinor-cbc coinor-libcbc-dev
+      - name: Compile and test
+        run: |
+          raku -Ilib -c lib/COIN-OR.rakumod
+          raku -Ilib xt/01-small-model.rakutest
+          raku -Ilib examples/small-model.raku

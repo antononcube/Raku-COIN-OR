@@ -1,0 +1,27 @@
+name: Test on Windows
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Raku/setup-raku@v1
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: mingw-w64-ucrt-x86_64-coin-or-cbc
+      - name: Compile and test
+        shell: pwsh
+        run: |
+          $cbcBin = 'C:\msys64\ucrt64\bin'
+          $env:PATH = "$cbcBin;$env:PATH"
+          $env:COIN_OR_CBC_LIBRARY = "$cbcBin\libCbcSolver-3.dll"
+          raku -Ilib -c lib/COIN-OR.rakumod
+          raku -Ilib xt/01-small-model.rakutest
+          raku -Ilib examples/small-model.raku
