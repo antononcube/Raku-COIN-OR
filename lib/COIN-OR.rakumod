@@ -33,8 +33,11 @@ use NativeCall;
 # NativeCall resolves the ordinary library name on Linux distributions. On
 # macOS, where Homebrew's prefix is architecture-dependent, callers can
 # provide either the full dylib path or its containing directory.
-constant $shared-library-file =
-    $*KERNEL.name.lc eq 'darwin' ?? 'libCbcSolver.dylib' !! 'libCbcSolver.so';
+constant $shared-library-file = do given $*KERNEL.name.lc {
+    when 'darwin' { 'libCbcSolver.dylib' }
+    when /win/   { 'libCbcSolver-3.dll' }
+    default      { 'libCbcSolver.so' }
+};
 sub cbc-library(--> Str) is export {
     %*ENV<COIN_OR_CBC_LIBRARY>
     // (%*ENV<COIN_OR_LIBRARY_DIR>:exists
