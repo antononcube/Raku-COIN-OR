@@ -8,7 +8,7 @@ plan 11;
 ok cbc-version.chars > 0, 'CBC C interface is available';
 ok cbc-library.chars > 0, 'CBC library location is configured';
 
-my $model = Model.new(:name<small-model-test>);
+my $model = COIN-OR::Model.new(:name<small-model-test>);
 $model.add-column('x', :upper(2), :objective(3), :integer);
 $model.add-column('y', :upper(3), :objective(2), :integer);
 $model.add-row('capacity', [0, 1], [1e0, 1e0], '<=', 4);
