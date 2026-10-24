@@ -11,7 +11,7 @@ COIN::OR - NativeCall bindings for the COIN-OR CBC mixed-integer solver
 
     use COIN::OR;
 
-    my $model = Model.new(:name<example>);
+    my $model = COIN-OR::Model.new(:name<example>);
     $model.add-column('x', :lower(0), :upper(2), :objective(3), :integer);
     $model.add-column('y', :lower(0), :upper(3), :objective(2), :integer);
     $model.add-row('capacity', [0, 1], [1e0, 1e0], '<=', 4);

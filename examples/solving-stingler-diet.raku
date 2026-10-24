@@ -13,7 +13,7 @@ my @values =
         [1.1,106,0,138,918.4,5.7,13.8,33,2755],
         [26.9,1691,11.4,792,0,38.4,24.6,217,0];
 
-my $model = Model.new(:name<stigler-diet>);
+my $model = COIN-OR::Model.new(:name<stigler-diet>);
 for @names -> $name { $model.add-column($name, :objective(1)) }
 for @requirements.kv -> $nutrient, $minimum {
     $model.add-row("nutrient-$nutrient", ^@names.elems,

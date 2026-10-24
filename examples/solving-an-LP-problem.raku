@@ -13,7 +13,7 @@ use COIN-OR;
 #   x, y >= 0
 #
 # No :integer argument is given, so x and y are continuous variables.
-my $model = Model.new(:name<google-or-tools-lp-example>);
+my $model = COIN-OR::Model.new(:name<google-or-tools-lp-example>);
 $model.add-column('x', :objective(3));
 $model.add-column('y', :objective(4));
 

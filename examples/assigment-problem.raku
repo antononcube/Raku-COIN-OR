@@ -13,7 +13,7 @@ my @costs =
 my $workers = @costs.elems;
 my $tasks = @costs[0].elems;
 
-my $model = Model.new(:name<assignment-problem>);
+my $model = COIN-OR::Model.new(:name<assignment-problem>);
 for ^$workers -> $worker {
     for ^$tasks -> $task {
         $model.add-column("worker-{$worker}-task-{$task}",
