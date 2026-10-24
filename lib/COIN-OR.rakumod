@@ -64,6 +64,9 @@ sub Cbc_getNumRows(CbcModel --> int32) is native(&cbc-library) { * }
 sub Cbc_getColSolution(CbcModel --> Pointer) is native(&cbc-library) { * }
 sub Cbc_setLogLevel(CbcModel, int32) is native(&cbc-library) { * }
 sub Cbc_setParameter(CbcModel, Str, Str) is native(&cbc-library) { * }
+sub Cbc_setAllowableGap(CbcModel, num64) is native(&cbc-library) { * }
+sub Cbc_setAllowableFractionGap(CbcModel, num64) is native(&cbc-library) { * }
+sub Cbc_setAllowablePercentageGap(CbcModel, num64) is native(&cbc-library) { * }
 
 sub cbc-version(--> Str) is export { Cbc_getVersion }
 
@@ -160,6 +163,66 @@ class Model is export {
         die "Unknown LP method '$method'; use simplex, dual-simplex, or interior-point"
         unless %cbc-action{$method}:exists;
         Cbc_setParameter(self!open, %cbc-action{$method}, '');
+        Nil
+    }
+
+    #| Set the primal-feasibility tolerance used by the LP solver.
+    method primal-tolerance(
+        #= Maximum permitted primal constraint violation; must be positive.
+        Real:D $value
+    --> Nil) {
+        die 'Primal tolerance must be positive' unless $value > 0;
+        Cbc_setParameter(self!open, 'primalTolerance', $value.Num.Str);
+        Nil
+    }
+
+    #| Set the dual-feasibility tolerance used by the LP solver.
+    method dual-tolerance(
+        #= Maximum permitted dual infeasibility; must be positive.
+        Real:D $value
+    --> Nil) {
+        die 'Dual tolerance must be positive' unless $value > 0;
+        Cbc_setParameter(self!open, 'dualTolerance', $value.Num.Str);
+        Nil
+    }
+
+    #| Set how close a MIP variable must be to an integer to be integral.
+    method integer-tolerance(
+        #= Maximum distance from an integer value; must be positive.
+        Real:D $value
+    --> Nil) {
+        die 'Integer tolerance must be positive' unless $value > 0;
+        Cbc_setParameter(self!open, 'integerTolerance', $value.Num.Str);
+        Nil
+    }
+
+    #| Set the absolute MIP optimality gap at which CBC may stop.
+    method allowable-gap(
+        #= Absolute difference permitted between the incumbent and best bound.
+        Real:D $value
+    --> Nil) {
+        die 'Allowable gap cannot be negative' if $value < 0;
+        Cbc_setAllowableGap(self!open, $value.Num);
+        Nil
+    }
+
+    #| Set the fractional MIP optimality gap at which CBC may stop.
+    method allowable-fraction-gap(
+        #= Fractional difference permitted between the incumbent and best bound.
+        Real:D $value
+    --> Nil) {
+        die 'Allowable fraction gap cannot be negative' if $value < 0;
+        Cbc_setAllowableFractionGap(self!open, $value.Num);
+        Nil
+    }
+
+    #| Set the percentage MIP optimality gap at which CBC may stop.
+    method allowable-percentage-gap(
+        #= Percentage difference permitted between the incumbent and best bound.
+        Real:D $value
+    --> Nil) {
+        die 'Allowable percentage gap cannot be negative' if $value < 0;
+        Cbc_setAllowablePercentageGap(self!open, $value.Num);
         Nil
     }
 

@@ -3,7 +3,7 @@ use Test;
 # use lib 'lib';
 use COIN-OR;
 
-plan 10;
+plan 11;
 
 ok cbc-version.chars > 0, 'CBC C interface is available';
 ok cbc-library.chars > 0, 'CBC library location is configured';
@@ -14,6 +14,15 @@ $model.add-column('y', :upper(3), :objective(2), :integer);
 $model.add-row('capacity', [0, 1], [1e0, 1e0], '<=', 4);
 $model.maximize;
 $model.log-level(0);
+
+lives-ok {
+    $model.primal-tolerance(1e-7);
+    $model.dual-tolerance(1e-7);
+    $model.integer-tolerance(1e-6);
+    $model.allowable-gap(0);
+    $model.allowable-fraction-gap(0);
+    $model.allowable-percentage-gap(0);
+}, 'LP tolerances and MIP optimality gaps can be configured';
 
 is $model.columns, 2, 'two columns were added';
 is $model.rows, 1, 'one constraint was added';
